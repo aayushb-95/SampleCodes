@@ -1,0 +1,47 @@
+import cv2
+import os
+
+directory_path1 = <path to dir1>
+directory_path2 = <path to dir2>
+directory_path3 = <path to dir3>
+
+def display_images(directory1, directory2, directory3):
+    # Get all the image file names in the directories
+    image_files = [file for file in os.listdir(directory1) if file.endswith(('.jpg', '.jpeg', '.png'))]
+
+    # Create a window to display the images
+    cv2.namedWindow('Side-by-Side Images', cv2.WINDOW_NORMAL)
+
+    # Initialize the image index
+    image_index = 0
+
+    while True:
+        # Load the images from the two directories based on the image index
+        image_file = image_files[image_index]
+        image1 = cv2.imread(os.path.join(directory1, image_file))
+        image2 = cv2.imread(os.path.join(directory2, image_file))
+        image3 = cv2.imread(os.path.join(directory3, image_file))
+
+        # Concatenate the images horizontally
+        side_by_side = cv2.hconcat([image1, image2, image3])
+
+        # Display the concatenated image with image number
+        cv2.putText(side_by_side, f'Image {image_index + 1}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        cv2.imshow('Side-by-Side Images', side_by_side)
+
+        # Wait for a key press
+        key = cv2.waitKey(0)
+
+        # Increase or decrease the image index based on user-defined key value
+        if key == ord('d'):
+            image_index = (image_index + 1) % len(image_files)
+        elif key == ord('a'):
+            image_index = (image_index - 1) % len(image_files)
+        elif key == 27:  # 'Esc' key to exit
+            break
+
+    # Destroy the window
+    cv2.destroyAllWindows()
+
+# Call the function to display the images
+display_images(directory_path1, directory_path2, directory_path3)
